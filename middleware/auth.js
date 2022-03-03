@@ -2,11 +2,14 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
 dotenv.config()
-const SECRET = process.env.SECRET;
+const SECRET = process.env.SECRET || "my-32-character-ultra-secure-and-ultra-long-secret";
 
 const auth = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(" ")[1]
+        const token = req.headers?.authorization?.split(" ")[1]
+        if (!token) {
+            return res.status(403).send("A token is required for authentication");
+          }
         const isCustomAuth = token.length < 500 
 
         let decodeData;

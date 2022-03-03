@@ -3,10 +3,12 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import nodemailer from 'nodemailer'
-
 import pdf from 'html-pdf'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import {imageFilter} from './helpers.js';
+import multer from 'multer'
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,21 +18,34 @@ import clientRoutes from './routes/clients.js'
 import userRoutes from './routes/userRoutes.js'
 import profile from './routes/profile.js'
 import pdfTemplate from './documents/index.js'
+import productRoutes from './routes/products.js'
 // import invoiceTemplate from './documents/invoice.js'
 import emailTemplate from './documents/email.js'
-
 const app = express()
 dotenv.config()
 
 app.use((express.json({ limit: "30mb", extended: true})))
 app.use((express.urlencoded({ limit: "30mb", extended: true})))
-app.use((cors()))
-
+app.use((cors())) 
+// app.use(express.static(__dirname + '/public'));
+app.use(express.static('public')); 
+app.use('/public', express.static('public'));
 app.use('/invoices', invoiceRoutes)
 app.use('/clients', clientRoutes)
 app.use('/users', userRoutes)
 app.use('/profiles', profile)
+app.use('/products', productRoutes)
 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
 // NODEMAILER TRANSPORT FOR SENDING INVOICE VIA EMAIL
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -43,7 +58,14 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized:false
     }
 })
-
+app.post('/upload-product-image', multer({ storage: storage, fileFilter: imageFilter }).single('product_pic'), (req, res, next) => {
+    const file = req.file;
+    console.log('error', res.err)
+    if (!file) {
+       return res.status(400).send({ message: 'Please upload a file.' });
+    }
+    return res.send({ message: 'File uploaded successfully.', file });
+ });
 
 var options = { format: 'A4' };
 //SEND PDF INVOICE VIA EMAIL
