@@ -19,6 +19,8 @@ import userRoutes from './routes/userRoutes.js'
 import profile from './routes/profile.js'
 import pdfTemplate from './documents/index.js'
 import productRoutes from './routes/products.js'
+import categoryRoutes from './routes/Category.js'
+import subcategoryRoutes from './routes/SubCategory.js'
 // import invoiceTemplate from './documents/invoice.js'
 import emailTemplate from './documents/email.js'
 const app = express()
@@ -33,6 +35,8 @@ app.use('/public', express.static('public'));
 app.use('/invoices', invoiceRoutes)
 app.use('/clients', clientRoutes)
 app.use('/users', userRoutes)
+app.use('/category', categoryRoutes)
+app.use('/subcategory', subcategoryRoutes)
 app.use('/profiles', profile)
 app.use('/products', productRoutes)
 
