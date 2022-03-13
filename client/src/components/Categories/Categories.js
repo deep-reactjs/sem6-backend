@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import moment from "moment";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import styles from "./Categories.module.css";
+// import moment from 'moment'
 import PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -21,12 +21,11 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import Container from "@material-ui/core/Container";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import BorderColorIcon from "@material-ui/icons/BorderColor";
-import { useLocation } from "react-router-dom";
-
-import { deleteInvoice, getInvoicesByUser } from "../../actions/invoiceActions";
-import NoData from "../svgIcons/NoData";
-import Spinner from "../Spinner/Spinner";
+import { Button } from "@material-ui/core";
 import { useSnackbar } from "react-simple-snackbar";
+
+import { deleteCategory } from "../../actions/categoryActions";
+// import clients from '../../clients.json'
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -115,49 +114,17 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-const tableStyle = {
-  width: 160,
-  fontSize: 14,
-  cursor: "pointer",
-  borderBottom: "none",
-  padding: "8px",
-  textAlign: "center",
-};
-const headerStyle = { borderBottom: "none", textAlign: "center" };
-
-const Invoices = () => {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const history = useHistory();
-  const user = JSON.parse(localStorage.getItem("profile"));
-  const rows = useSelector((state) => state.invoices.invoices);
-  const isLoading = useSelector((state) => state.invoices.isLoading);
+const Categories = ({ setOpen, setCurrentId, categories }) => {
+  const classes = useStyles2();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(categories?.length);
   // eslint-disable-next-line
   const [openSnackbar, closeSnackbar] = useSnackbar();
 
-  // const rows = []
-
-  // useEffect(() => {
-  //     dispatch(getInvoices());
-  // }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(
-      getInvoicesByUser({ search: user?.result?._id || user?.result?.googleId })
-    );
-    // eslint-disable-next-line
-  }, [location]);
-
-  const toCommas = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const classes = useStyles2();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(rows.length);
-
+  const dispatch = useDispatch();
+  const rows = categories;
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, rows?.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -168,98 +135,39 @@ const Invoices = () => {
     setPage(0);
   };
 
-  const editInvoice = (id) => {
-    history.push(`/edit/invoice/${id}`);
+  const handleEdit = (selectedInvoice) => {
+    setOpen((prevState) => !prevState);
+    setCurrentId(selectedInvoice);
   };
 
-  const openInvoice = (id) => {
-    history.push(`/invoice/${id}`);
+  const tableStyle = {
+    width: 160,
+    fontSize: 14,
+    cursor: "pointer",
+    borderBottom: "none",
+    padding: "8px",
+    textAlign: "center",
   };
-
-  if (!user) {
-    history.push("/login");
-  }
-
-  function checkStatus(status) {
-    return status === "Partial"
-      ? {
-          border: "solid 0px #1976d2",
-          backgroundColor: "#baddff",
-          padding: "8px 18px",
-          borderRadius: "20px",
-        }
-      : status === "Paid"
-      ? {
-          border: "solid 0px green",
-          backgroundColor: "#a5ffcd",
-          padding: "8px 18px",
-          borderRadius: "20px",
-        }
-      : status === "Unpaid"
-      ? {
-          border: "solid 0px red",
-          backgroundColor: "#ffaa91",
-          padding: "8px 18px",
-          borderRadius: "20px",
-        }
-      : {};
-  }
-
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          paddingTop: "20px",
-        }}
-      >
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (rows.length === 0) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          paddingTop: "20px",
-          margin: "80px",
-        }}
-      >
-        <NoData />
-        <p style={{ padding: "40px", color: "gray", textAlign: "center" }}>
-          No invoice yet. Click the plus icon to create invoice
-        </p>
-      </div>
-    );
-  }
+  const headerStyle = { borderBottom: "none", textAlign: "center" };
 
   return (
-    <div>
-      <Container
-        style={{
-          width: "85%",
-          paddingTop: "70px",
-          paddingBottom: "50px",
-          border: "none",
-        }}
-      >
+    <div className={styles.pageLayout}>
+      <Container style={{ width: "85%" }}>
+        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
+          Add Category
+        </Button>
+        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
+          Add Subcategory
+        </Button>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>
               <TableRow>
-                <TableCell style={headerStyle}>Number</TableCell>
-                <TableCell style={headerStyle}>Client</TableCell>
-                <TableCell style={headerStyle}>Amount</TableCell>
-                <TableCell style={headerStyle}>Due Date</TableCell>
-                <TableCell style={headerStyle}>Status</TableCell>
+                <TableCell style={{ ...headerStyle, width: "10px" }}>
+                  Number
+                </TableCell>
+                <TableCell style={headerStyle}>Name</TableCell>
+                <TableCell style={headerStyle}>SubCategories</TableCell>
                 <TableCell style={headerStyle}>Edit</TableCell>
                 <TableCell style={headerStyle}>Delete</TableCell>
               </TableRow>
@@ -267,52 +175,37 @@ const Invoices = () => {
 
             <TableBody>
               {(rowsPerPage > 0
-                ? rows.slice(
+                ? rows?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
                 : rows
-              ).map((row) => (
-                <TableRow key={row._id} style={{ cursor: "pointer" }}>
-                  <TableCell
-                    style={tableStyle}
-                    onClick={() => openInvoice(row._id)}
-                  >
-                    {" "}
-                    {row.invoiceNumber}{" "}
+              )?.map((row, index) => (
+                <TableRow key={row._id} styel={{ cursor: "pointer" }}>
+                  <TableCell style={{ ...tableStyle, width: "10px" }}>
+                    {index + 1}
                   </TableCell>
-                  <TableCell
-                    style={tableStyle}
-                    onClick={() => openInvoice(row._id)}
-                  >
+                  <TableCell style={tableStyle} scope="row">
                     {" "}
-                    {row.client.name}{" "}
+                    <Button style={{ textTransform: "none" }}>
+                      {" "}
+                      {row.category.name}{" "}
+                    </Button>
                   </TableCell>
-                  <TableCell
-                    style={tableStyle}
-                    onClick={() => openInvoice(row._id)}
-                  >
-                    {row.currency} {row.total ? toCommas(row.total) : row.total}{" "}
-                  </TableCell>
-                  <TableCell
-                    style={tableStyle}
-                    onClick={() => openInvoice(row._id)}
-                  >
+                  <TableCell style={tableStyle} scope="row">
                     {" "}
-                    {moment(row.dueDate).fromNow()}{" "}
-                  </TableCell>
-                  <TableCell
-                    style={tableStyle}
-                    onClick={() => openInvoice(row._id)}
-                  >
-                    {" "}
-                    <button style={checkStatus(row?.status)}>
-                      {row?.status}
-                    </button>
+                    <Button style={{ textTransform: "none" }}>
+                      {" "}
+                      {row.subCategories
+                        .map((subCategory) => {
+                          return subCategory.name;
+                        })
+                        .toString()}
+                    </Button>
                   </TableCell>
 
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
-                    <IconButton onClick={() => editInvoice(row._id)}>
+                    <IconButton onClick={() => handleEdit(row.category._id)}>
                       <BorderColorIcon
                         style={{ width: "20px", height: "20px" }}
                       />
@@ -321,7 +214,7 @@ const Invoices = () => {
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
                     <IconButton
                       onClick={() =>
-                        dispatch(deleteInvoice(row._id, openSnackbar))
+                        dispatch(deleteCategory(row.category._id, openSnackbar))
                       }
                     >
                       <DeleteOutlineRoundedIcon
@@ -334,7 +227,7 @@ const Invoices = () => {
 
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={7} />
+                  <TableCell colSpan={9} />
                 </TableRow>
               )}
             </TableBody>
@@ -342,8 +235,8 @@ const Invoices = () => {
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={7}
-                  count={rows.length}
+                  colSpan={9}
+                  count={rows?.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -363,4 +256,4 @@ const Invoices = () => {
   );
 };
 
-export default Invoices;
+export default Categories;

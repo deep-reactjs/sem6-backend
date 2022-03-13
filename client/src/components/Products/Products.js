@@ -114,7 +114,7 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-const Products = ({ setOpen, setCurrentId, products }) => {
+const Products = ({ setOpen, setCurrentId, products, categories }) => {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(products?.length);
@@ -161,6 +161,7 @@ const Products = ({ setOpen, setCurrentId, products }) => {
                 <TableCell style={{ ...headerStyle, width: "10px" }}>
                   Number
                 </TableCell>
+                <TableCell style={headerStyle}>Image</TableCell>
                 <TableCell style={headerStyle}>Name</TableCell>
                 <TableCell style={headerStyle}>Category</TableCell>
                 <TableCell style={headerStyle}>Sub-Category</TableCell>
@@ -184,6 +185,14 @@ const Products = ({ setOpen, setCurrentId, products }) => {
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
                     {index + 1}
                   </TableCell>
+                  <TableCell style={tableStyle}>
+                    <img
+                      src="https://picsum.photos/200/300"
+                      height="100"
+                      width="100"
+                      alt={row.name}
+                    />
+                  </TableCell>
                   <TableCell style={tableStyle} scope="row">
                     {" "}
                     <Button style={{ textTransform: "none" }}>
@@ -191,8 +200,20 @@ const Products = ({ setOpen, setCurrentId, products }) => {
                       {row.name}{" "}
                     </Button>
                   </TableCell>
-                  <TableCell style={tableStyle}>{row.category}</TableCell>
-                  <TableCell style={tableStyle}>{row.subCategory}</TableCell>
+                  <TableCell style={tableStyle}>
+                    {categories &&
+                      categories.find(
+                        (data) => data?.category?._id === row?.category
+                      )?.category?.name}
+                  </TableCell>
+                  <TableCell style={tableStyle}>
+                    {categories &&
+                      categories
+                        .find((data) => data?.category?._id === row?.category)
+                        ?.subCategories?.find(
+                          (subCategory) => subCategory._id === row.subCategory
+                        )?.name}
+                  </TableCell>
                   <TableCell style={tableStyle}>{row.brand}</TableCell>
                   <TableCell style={tableStyle}>{row.price}</TableCell>
                   <TableCell style={tableStyle}>{row.quantity}</TableCell>

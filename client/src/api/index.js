@@ -22,6 +22,16 @@ export const deleteInvoice = (id) => API.delete(`/invoices/${id}`);
 export const fetchInvoicesByUser = (searchQuery) =>
   API.get(`/invoices?searchQuery=${searchQuery.search}`);
 
+export const getCategories = () => API.get("/category");
+export const fetchCategory = (id) => API.get(`/category/${id}`);
+export const fetchCategories = (page) => API.get(`/category?page=${page}`);
+export const addCategory = (product) => API.post("/category", product);
+export const updateCategory = (id, updatedProduct) =>
+  API.patch(`/category/${id}`, updatedProduct);
+export const deleteCategory = (id) => API.delete(`/category/${id}`);
+export const fetchCategoriesByUser = (searchQuery) =>
+  API.get(`/category/user?searchQuery=${searchQuery.search}`);
+
 export const fetchClient = (id) => API.get(`/clients/${id}`);
 export const fetchClients = (page) => API.get(`/clients?page=${page}`);
 export const addClient = (client) => API.post("/clients", client);
