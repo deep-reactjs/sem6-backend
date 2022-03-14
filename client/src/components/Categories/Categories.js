@@ -114,7 +114,12 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-const Categories = ({ setOpen, setCurrentId, categories }) => {
+const Categories = ({
+  setOpen,
+  setCurrentId,
+  categories,
+  setOpenSubCategory,
+}) => {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(categories?.length);
@@ -155,9 +160,6 @@ const Categories = ({ setOpen, setCurrentId, categories }) => {
       <Container style={{ width: "85%" }}>
         <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
           Add Category
-        </Button>
-        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
-          Add Subcategory
         </Button>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">

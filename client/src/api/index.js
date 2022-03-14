@@ -32,6 +32,11 @@ export const deleteCategory = (id) => API.delete(`/category/${id}`);
 export const fetchCategoriesByUser = (searchQuery) =>
   API.get(`/category/user?searchQuery=${searchQuery.search}`);
 
+export const addSubCategory = (product) => API.post("/subcategory", product);
+export const updateSubCategory = (id, updatedSubcategory) =>
+  API.patch(`/subcategory/${id}`, updatedSubcategory);
+export const deleteSubCategory = (id) => API.delete(`/subcategory/${id}`);
+
 export const fetchClient = (id) => API.get(`/clients/${id}`);
 export const fetchClients = (page) => API.get(`/clients?page=${page}`);
 export const addClient = (client) => API.post("/clients", client);

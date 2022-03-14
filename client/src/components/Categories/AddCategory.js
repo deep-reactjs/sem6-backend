@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import Chip from "@material-ui/core/Chip";
+import ChipInput from "material-ui-chip-input";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -60,7 +62,18 @@ const DialogActions = withStyles((theme) => ({
     padding: theme.spacing(1),
   },
 }))(MuiDialogActions);
+const chipRenderer = ({ chip, className, handleClick, handleDelete }, key) => (
+  <Chip
+    className={className}
+    key={key}
+    label={chip}
+    onClick={handleClick}
+    onDelete={handleDelete}
+    size="small"
+  />
+);
 
+const defaultValue = ["Material UI", "Chips"];
 const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
   const location = useLocation();
   const [categoryData, setCategoryData] = useState({
@@ -72,6 +85,12 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
     currentId
       ? state.categories.categories.find((c) => c.category._id === currentId)
           .category
+      : null
+  );
+  const subCategories = useSelector((state) =>
+    currentId
+      ? state.categories.categories.find((c) => c.category._id === currentId)
+          .subCategories
       : null
   );
   const state = useSelector((state) => state);
@@ -124,7 +143,7 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
     display: "block",
     padding: "1.4rem 0.75rem",
     width: "100%",
-    fontSize: "0.8rem",
+    fontSize: "1rem",
     lineHeight: 1.25,
     color: "#55595c",
     backgroundColor: "#fff",
@@ -165,6 +184,19 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
                   setCategoryData({ ...categoryData, name: e.target.value })
                 }
                 value={categoryData.name}
+              />
+              <ChipInput
+                chipRenderer={chipRenderer}
+                style={{
+                  color: "#55595c",
+                  backgroundColor: "#fff",
+                  width: "100%",
+                }}
+                defaultValue={
+                  (subCategories && subCategories.map((data) => data.name)) ||
+                  []
+                }
+                label="Sub Categories"
               />
             </div>
           </DialogContent>

@@ -64,7 +64,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-const AddSubCategory = ({ setOpen, open, currentId, setCurrentId }) => {
+const AddSubCategory = ({ setOpen, open, categories }) => {
   const location = useLocation();
   const [subCategoryData, setSubCategoryData] = useState({
     name: "",

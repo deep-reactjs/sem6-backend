@@ -84,13 +84,18 @@ const CategoryList = () => {
         currentId={currentId}
         setCurrentId={setCurrentId}
       />
-      {/* <AddSubCategory open={openSubCategory} setOpen={setOpenSubCategory} /> */}
+      {/* <AddSubCategory
+        open={openSubCategory}
+        categories={categories}
+        setOpen={setOpenSubCategory}
+      /> */}
       <Categories
         open={open}
         setOpen={setOpen}
         currentId={currentId}
         setCurrentId={setCurrentId}
         categories={categories}
+        setOpenSubCategory={setOpenSubCategory}
       />
     </div>
   );
