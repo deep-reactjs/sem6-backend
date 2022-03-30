@@ -55,15 +55,28 @@ const storage = multer.diskStorage({
 });
 // NODEMAILER TRANSPORT FOR SENDING INVOICE VIA EMAIL
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  // host: "localhost",
+  // port: 587,
+  // auth: {
+  //   user: "bpccsdeep@gmail.com",
+  //   pass: "Deep#7046",
+  // },
+  // tls: {
+  //   rejectUnauthorized: false,
+  // },
+  host: "smtp.ethereal.email",
+  port: 587,
   auth: {
-    user: "bpccsdeep@gmail.com",
-    pass: "Deep#7046",
+    user: "kassandra.nader55@ethereal.email",
+    pass: "B9xn8HJP67VeSZUFWb",
   },
-  tls: {
-    rejectUnauthorized: false,
-  },
+});
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take our messages");
+  }
 });
 app.post(
   "/upload-product-image",
@@ -86,26 +99,30 @@ app.post("/send-pdf", (req, res) => {
   // pdf.create(pdfTemplate(req.body), {}).toFile('invoice.pdf', (err) => {
   pdf.create(pdfTemplate(req.body), options).toFile("invoice.pdf", (err) => {
     // send mail with defined transport object
-    transporter.sendMail({
-      from: `${
-        company.businessName ? company.businessName : company.name
-      } <hello@arcinvoice.com>`, // sender address
-      to: `${email}`, // list of receivers
-      replyTo: `${company.email}`,
-      subject: `Invoice from ${
-        company.businessName ? company.businessName : company.name
-      }`, // Subject line
-      text: `Invoice from ${
-        company.businessName ? company.businessName : company.name
-      }`, // plain text body
-      html: emailTemplate(req.body), // html body
-      attachments: [
-        {
-          filename: "invoice.pdf",
-          path: `${__dirname}/invoice.pdf`,
-        },
-      ],
-    });
+    transporter
+      .sendMail({
+        from: `${
+          company.businessName ? company.businessName : company.name
+        } <deepsoni704625@gmail.com>`, // sender address
+        to: `${email}`, // list of receivers
+        replyTo: `${company.email}`,
+        subject: `Invoice from ${
+          company.businessName ? company.businessName : company.name
+        }`, // Subject line
+        text: `Invoice from ${
+          company.businessName ? company.businessName : company.name
+        }`, // plain text body
+        html: emailTemplate(req.body), // html body
+        attachments: [
+          {
+            filename: "invoice.pdf",
+            path: `${__dirname}/invoice.pdf`,
+          },
+        ],
+      })
+      .then((info) => {
+        console.log("Preview URL: " + nodemailer.getTestMessageUrl(info));
+      });
 
     if (err) {
       res.send(Promise.reject());

@@ -10,7 +10,8 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct, updateProduct } from "../../actions/productActions";
 import { useSnackbar } from "react-simple-snackbar";
@@ -65,25 +66,31 @@ const AddProduct = ({ setOpen, open, currentId, setCurrentId }) => {
   const location = useLocation();
   const [productData, setProductData] = useState({
     name: "",
-    email: "",
-    phone: "",
-    address: "",
+    quantity: "",
+    brand: "",
+    price: "",
     userId: "",
   });
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedSubCategory, setSelectedSubCategory] = useState();
   const dispatch = useDispatch();
-  const product = useSelector((state) =>
-    currentId ? state.products.products.find((c) => c._id === currentId) : null
-  );
+  const { product, categories } = useSelector((state) => ({
+    product: currentId
+      ? state.products.products.find((c) => c._id === currentId)
+      : null,
+    categories: state.categories.categories,
+  }));
   // eslint-disable-next-line
   const [openSnackbar, closeSnackbar] = useSnackbar();
 
   useEffect(() => {
     if (product) {
       setProductData(product);
+      setSelectedCategory(product.category);
+      setSelectedSubCategory(product.subCategory);
     }
   }, [product]);
-
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("profile")));
     // setClientData({...clientData, userId: user?.result?._id})
@@ -98,12 +105,26 @@ const AddProduct = ({ setOpen, open, currentId, setCurrentId }) => {
     }
   }, [location]);
 
-  const handleSubmitProduct = (e) => {
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
     if (currentId) {
       dispatch(updateProduct(currentId, productData, openSnackbar));
     } else {
-      dispatch(createProduct(productData, openSnackbar));
+      dispatch(
+        createProduct(
+          {
+            name: productData.name,
+            category: selectedCategory,
+            subCategory: selectedSubCategory,
+            quantity: productData.quantity,
+            brand: productData.brand,
+            price: productData.price,
+            imgUrl: "",
+            userId: productData.userId,
+          },
+          openSnackbar
+        )
+      );
     }
 
     clear();
@@ -112,18 +133,28 @@ const AddProduct = ({ setOpen, open, currentId, setCurrentId }) => {
 
   const clear = () => {
     setCurrentId(null);
-    setProductData({ name: "", email: "", phone: "", address: "", userId: [] });
+    setProductData({
+      name: "",
+      quantity: "",
+      brand: "",
+      price: "",
+      userId: "",
+      file: "",
+    });
+    setSelectedCategory();
+    setSelectedSubCategory();
   };
 
   const handleClose = () => {
     setOpen(false);
+    clear();
   };
 
   const inputStyle = {
     display: "block",
     padding: "1.4rem 0.75rem",
     width: "100%",
-    fontSize: "0.8rem",
+    fontSize: "16px",
     lineHeight: 1.25,
     color: "#55595c",
     backgroundColor: "#fff",
@@ -155,48 +186,107 @@ const AddProduct = ({ setOpen, open, currentId, setCurrentId }) => {
           </DialogTitle>
           <DialogContent dividers>
             <div className="customInputs">
+              {productData?.file ? (
+                <img
+                  src={URL.createObjectURL(productData?.file)}
+                  alt="product"
+                  style={{
+                    height: "300px",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                <input
+                  placeholder="Name"
+                  style={inputStyle}
+                  name="file"
+                  type="file"
+                  onChange={(e) => {
+                    setProductData({ ...productData, file: e.target.files[0] });
+                  }}
+                />
+              )}
               <input
                 placeholder="Name"
                 style={inputStyle}
                 name="name"
+                label="name"
                 type="text"
                 onChange={(e) =>
                   setProductData({ ...productData, name: e.target.value })
                 }
                 value={productData.name}
               />
-
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedCategory}
+                fullWidth
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                style={{ fontSize: "16px", padding: "12px" }}
+              >
+                {categories &&
+                  categories?.map(({ category }, id) => (
+                    <MenuItem key={id} value={category._id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              {selectedCategory &&
+              categories?.find(
+                ({ category }) => category._id === selectedCategory
+              )?.subCategories?.length > 0 ? (
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selectedSubCategory}
+                  fullWidth
+                  onChange={(e) => setSelectedSubCategory(e.target.value)}
+                  style={{ fontSize: "16px", padding: "12px" }}
+                >
+                  {categories
+                    ?.find(({ category }) => category._id === selectedCategory)
+                    ?.subCategories?.map((subCategory, id) => (
+                      <MenuItem key={id} value={subCategory._id}>
+                        {subCategory.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              ) : (
+                ""
+              )}
               <input
-                placeholder="Email"
+                placeholder="Brand"
                 style={inputStyle}
-                name="email"
+                name="brand"
                 type="text"
                 onChange={(e) =>
-                  setProductData({ ...productData, email: e.target.value })
+                  setProductData({ ...productData, brand: e.target.value })
                 }
-                value={productData.email}
+                value={productData.brand}
               />
 
               <input
-                placeholder="Phone"
+                placeholder="Price"
                 style={inputStyle}
-                name="phone"
+                name="price"
                 type="text"
                 onChange={(e) =>
-                  setProductData({ ...productData, phone: e.target.value })
+                  setProductData({ ...productData, price: e.target.value })
                 }
-                value={productData.phone}
+                value={productData.price}
               />
 
               <input
-                placeholder="Address"
+                placeholder="Quantity"
                 style={inputStyle}
-                name="address"
+                name="quantity"
                 type="text"
                 onChange={(e) =>
-                  setProductData({ ...productData, address: e.target.value })
+                  setProductData({ ...productData, quantity: e.target.value })
                 }
-                value={productData.address}
+                value={productData.quantity}
               />
             </div>
           </DialogContent>

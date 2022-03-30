@@ -38,7 +38,7 @@ export const createProduct = (product, openSnackbar) => async (dispatch) => {
   try {
     const { data } = await api.addProduct(product);
     dispatch({ type: ADD_NEW_PRODUCT, payload: data });
-    openSnackbar("Customer added successfully");
+    openSnackbar("Product added successfully");
   } catch (error) {
     console.log(error);
   }

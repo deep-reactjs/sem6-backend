@@ -154,6 +154,9 @@ const Products = ({ setOpen, setCurrentId, products, categories }) => {
   return (
     <div className={styles.pageLayout}>
       <Container style={{ width: "85%" }}>
+        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
+          Add Product
+        </Button>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>

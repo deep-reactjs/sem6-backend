@@ -418,30 +418,30 @@ const Invoice = () => {
                 {invoiceData.items.map((itemField, index) => (
                   <TableRow key={index}>
                     <TableCell scope="row" style={{ width: "40%" }}>
-                      <div
-                        style={
-                          client ? { display: "none" } : { display: "block" }
-                        }
-                      >
-                        <Autocomplete
-                          {...productProps}
-                          PaperComponent={CustomPaper}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              // required={!invoice && true}
-                              label="Select Product"
-                              margin="normal"
-                              variant="outlined"
-                            />
-                          )}
-                          value={products?.name}
-                          onChange={
-                            (event, value) => console.log(event, value)
-                            // handleChangeProducts(index, value)
-                          }
-                          onDelete={(value) => console.log(value)}
-                        />
+                      <div>
+                        {itemField?.itemName ? (
+                          <>{itemField.itemName}</>
+                        ) : (
+                          <Autocomplete
+                            {...productProps}
+                            PaperComponent={CustomPaper}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                // required={!invoice && true}
+                                label="Select Product"
+                                margin="normal"
+                                variant="outlined"
+                              />
+                            )}
+                            value={products?.name}
+                            onChange={(event, value) => {
+                              console.log(event, value);
+                              handleChangeProducts(index, value);
+                            }}
+                            onDelete={(value) => console.log(value)}
+                          />
+                        )}
                       </div>{" "}
                       {/* <InputBase
                         style={{ width: "100%" }}
