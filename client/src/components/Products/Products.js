@@ -8,6 +8,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
+import { TextField } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -122,8 +123,17 @@ const Products = ({ setOpen, setCurrentId, products, categories }) => {
   const [openSnackbar, closeSnackbar] = useSnackbar();
 
   const dispatch = useDispatch();
-  const rows = products;
-
+  const [rows, setRows] = useState(products);
+  React.useEffect(() => {
+    setRows(products);
+  }, [products]);
+  const requestSearch = (searchedVal) => {
+    setPage(0);
+    const filteredRows = products.filter((row) => {
+      return row.name.toLowerCase().includes(searchedVal.toLowerCase());
+    });
+    setRows(filteredRows);
+  };
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows?.length - page * rowsPerPage);
 
@@ -157,6 +167,14 @@ const Products = ({ setOpen, setCurrentId, products, categories }) => {
         <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
           Add Product
         </Button>
+        <TextField
+          id="outlined-basic"
+          label="Search Product"
+          variant="outlined"
+          size="small"
+          fullWidth
+          onChange={(e) => requestSearch(e.target.value)}
+        />
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>

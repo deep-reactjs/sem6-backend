@@ -18,7 +18,6 @@ const ProductList = () => {
   const user = JSON.parse(localStorage.getItem("profile"));
   const { products } = useSelector((state) => state.products);
   const { categories } = useSelector((state) => state.categories);
-  console.log(categories);
   const isLoading = useSelector((state) => state?.products?.isLoading);
   // const clients = []
 

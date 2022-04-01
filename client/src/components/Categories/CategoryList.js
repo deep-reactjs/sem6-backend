@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Categories from "./Categories";
 import AddCategory from "./AddCategory";
-// import AddSubCategory from "./AddSubCategory";
+import AddSubCategory from "./AddSubCategory";
 import { getCategoriesByUser } from "../../actions/categoryActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
@@ -15,6 +15,7 @@ const CategoryList = () => {
   const [open, setOpen] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [subId, setSubId] = useState(null);
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"));
   const { categories } = useSelector((state) => state.categories);
@@ -84,11 +85,13 @@ const CategoryList = () => {
         currentId={currentId}
         setCurrentId={setCurrentId}
       />
-      {/* <AddSubCategory
+      <AddSubCategory
         open={openSubCategory}
         categories={categories}
+        currentId={subId}
+        setCurrentId={setSubId}
         setOpen={setOpenSubCategory}
-      /> */}
+      />
       <Categories
         open={open}
         setOpen={setOpen}

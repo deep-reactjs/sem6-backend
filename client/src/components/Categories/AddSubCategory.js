@@ -10,7 +10,9 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-
+import Select from "@material-ui/core/Select";
+import { getCategoriesByUser } from "../../actions/categoryActions";
+import MenuItem from "@material-ui/core/MenuItem";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createSubCategory,
@@ -64,12 +66,19 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-const AddSubCategory = ({ setOpen, open, categories }) => {
+const AddSubCategory = ({
+  setOpen,
+  open,
+  currentId,
+  categories,
+  setCurrentId,
+}) => {
   const location = useLocation();
   const [subCategoryData, setSubCategoryData] = useState({
     name: "",
   });
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [selectedSubCategory, setSelectedSubCategory] = useState();
   const dispatch = useDispatch();
   const category = useSelector((state) =>
     currentId
@@ -103,14 +112,22 @@ const AddSubCategory = ({ setOpen, open, categories }) => {
       });
     }
   }, [location]);
-
+  console.log(selectedSubCategory);
   const handleSubmitSubCategory = (e) => {
     e.preventDefault();
     if (currentId) {
       dispatch(updateSubCategory(currentId, subCategoryData, openSnackbar));
     } else {
-      dispatch(createSubCategory(subCategoryData, openSnackbar));
+      dispatch(
+        createSubCategory(
+          { ...subCategoryData, categoryId: selectedSubCategory },
+          openSnackbar
+        )
+      );
     }
+    dispatch(
+      getCategoriesByUser({ search: user?.result?._id || user.result.googleId })
+    );
 
     clear();
     handleClose();
@@ -176,6 +193,21 @@ const AddSubCategory = ({ setOpen, open, categories }) => {
                 }
                 value={subCategoryData.name}
               />
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedSubCategory}
+                fullWidth
+                onChange={(e) => setSelectedSubCategory(e.target.value)}
+                style={{ fontSize: "16px", padding: "12px" }}
+              >
+                {categories &&
+                  categories?.map(({ category }, id) => (
+                    <MenuItem key={id} value={category._id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+              </Select>
             </div>
           </DialogContent>
           <DialogActions>

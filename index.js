@@ -21,6 +21,7 @@ import pdfTemplate from "./documents/index.js";
 import productRoutes from "./routes/products.js";
 import categoryRoutes from "./routes/Category.js";
 import subcategoryRoutes from "./routes/SubCategory.js";
+import adminRoutes from "./routes/admin.js";
 // import invoiceTemplate from './documents/invoice.js'
 import emailTemplate from "./documents/email.js";
 const app = express();
@@ -39,6 +40,7 @@ app.use("/category", categoryRoutes);
 app.use("/subcategory", subcategoryRoutes);
 app.use("/profiles", profile);
 app.use("/products", productRoutes);
+app.use("/admin", adminRoutes);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -55,29 +57,29 @@ const storage = multer.diskStorage({
 });
 // NODEMAILER TRANSPORT FOR SENDING INVOICE VIA EMAIL
 const transporter = nodemailer.createTransport({
-  // host: "localhost",
-  // port: 587,
-  // auth: {
-  //   user: "bpccsdeep@gmail.com",
-  //   pass: "Deep#7046",
-  // },
-  // tls: {
-  //   rejectUnauthorized: false,
-  // },
-  host: "smtp.ethereal.email",
+  host: "smtp.gmail.com",
   port: 587,
   auth: {
-    user: "kassandra.nader55@ethereal.email",
-    pass: "B9xn8HJP67VeSZUFWb",
+    user: "deep.infynno@gmail.com",
+    pass: "Deep123#",
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
+  // host: "smtp.ethereal.email",
+  // port: 587,
+  // auth: {
+  //   user: "kassandra.nader55@ethereal.email",
+  //   pass: "B9xn8HJP67VeSZUFWb",
+  // },
 });
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("Server is ready to take our messages");
-  }
-});
+// transporter.verify(function (error, success) {
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log("Server is ready to take our messages");
+//   }
+// });
 app.post(
   "/upload-product-image",
   multer({ storage: storage, fileFilter: imageFilter }).single("product_pic"),

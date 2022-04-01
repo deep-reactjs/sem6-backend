@@ -10,6 +10,7 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
+
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 
@@ -68,7 +69,7 @@ const chipRenderer = ({ chip, className, handleClick, handleDelete }, key) => (
     key={key}
     label={chip}
     onClick={handleClick}
-    onDelete={handleDelete}
+    // onDelete={handleDelete}
     size="small"
   />
 );
@@ -192,6 +193,8 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
                   backgroundColor: "#fff",
                   width: "100%",
                 }}
+                readOnly
+                disabled
                 defaultValue={
                   (subCategories && subCategories.map((data) => data.name)) ||
                   []

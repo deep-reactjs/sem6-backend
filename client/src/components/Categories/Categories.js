@@ -158,11 +158,14 @@ const Categories = ({
   return (
     <div className={styles.pageLayout}>
       <Container style={{ width: "85%" }}>
+        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
+          Add Category
+        </Button>
         <Button
           style={{ textTransform: "none" }}
           onClick={() => setOpenSubCategory(true)}
         >
-          Add Category
+          Add Sub Category
         </Button>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">

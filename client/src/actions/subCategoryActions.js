@@ -9,7 +9,7 @@ import {
 export const createSubCategory =
   (subCategory, openSnackbar) => async (dispatch) => {
     try {
-      const { data } = await api.addCategory(subCategory);
+      const { data } = await api.addSubCategory(subCategory);
       dispatch({ type: ADD_NEW_SUBCATEGORY, payload: data });
       openSnackbar("Sub-Category added successfully");
     } catch (error) {
