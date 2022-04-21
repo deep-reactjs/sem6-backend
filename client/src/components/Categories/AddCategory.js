@@ -97,6 +97,7 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
   const state = useSelector((state) => state);
   // eslint-disable-next-line
   const [openSnackbar, closeSnackbar] = useSnackbar();
+  const [errorText, setErrorText] = useState(null);
   useEffect(() => {
     if (category) {
       setCategoryData(category);
@@ -119,18 +120,23 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
 
   const handleSubmitCategory = (e) => {
     e.preventDefault();
-    if (currentId) {
-      dispatch(updateCategory(currentId, categoryData, openSnackbar));
+    if (!categoryData.name) {
+      setErrorText("Please enter category name");
+    } else if (categoryData.name.length > 50) {
+      setErrorText("Max 50 characters allowed");
     } else {
-      dispatch(createCategory(categoryData, openSnackbar));
+      if (currentId) {
+        dispatch(updateCategory(currentId, categoryData, openSnackbar));
+      } else {
+        dispatch(createCategory(categoryData, openSnackbar));
+      }
+      clear();
+      handleClose();
     }
-
-    clear();
-    handleClose();
   };
 
   const clear = () => {
-    setCurrentId(null);
+    setCurrentId && setCurrentId(null);
     setCategoryData({
       name: "",
     });
@@ -181,27 +187,35 @@ const AddCategory = ({ setOpen, open, currentId, setCurrentId }) => {
                 style={inputStyle}
                 name="name"
                 type="text"
-                onChange={(e) =>
-                  setCategoryData({ ...categoryData, name: e.target.value })
-                }
+                onChange={(e) => {
+                  if (e.target.value.length > 50) {
+                    setErrorText("Max 50 characters allowed");
+                  } else {
+                    setErrorText(null);
+                    setCategoryData({ ...categoryData, name: e.target.value });
+                  }
+                }}
                 value={categoryData.name}
               />
-              <ChipInput
-                chipRenderer={chipRenderer}
-                style={{
-                  color: "#55595c",
-                  backgroundColor: "#fff",
-                  width: "100%",
-                }}
-                readOnly
-                disabled
-                defaultValue={
-                  (subCategories && subCategories.map((data) => data.name)) ||
-                  []
-                }
-                label="Sub Categories"
-              />
+              {currentId && (
+                <ChipInput
+                  chipRenderer={chipRenderer}
+                  style={{
+                    color: "#55595c",
+                    backgroundColor: "#fff",
+                    width: "100%",
+                  }}
+                  readOnly
+                  disabled
+                  defaultValue={
+                    (subCategories && subCategories.map((data) => data.name)) ||
+                    []
+                  }
+                  label="Sub Categories"
+                />
+              )}
             </div>
+            {errorText && <Typography color="error">{errorText}</Typography>}
           </DialogContent>
           <DialogActions>
             <Button

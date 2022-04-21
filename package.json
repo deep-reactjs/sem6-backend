@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "homepage": "arcinvoice.com",
+  "homepage": "http://localhost:3000",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "start": "nodemon index.js"
   },
   "keywords": [],
-  "author": "Panshak Solomon",
+  "author": "Deep",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

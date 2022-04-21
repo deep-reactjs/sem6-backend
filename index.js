@@ -60,8 +60,8 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   auth: {
-    user: "deep.infynno@gmail.com",
-    pass: "Deep123#",
+    user: process.env.user,
+    pass: process.env.pass,
   },
   tls: {
     rejectUnauthorized: false,
@@ -82,10 +82,26 @@ const transporter = nodemailer.createTransport({
 // });
 app.post(
   "/upload-product-image",
-  multer({ storage: storage, fileFilter: imageFilter }).single("product_pic"),
+  multer({ storage: storage, fileFilter: imageFilter }).single("file"),
   (req, res, next) => {
     const file = req.file;
-    console.log("error", res.err);
+    if (res.err) {
+      return res.status(400).send({ message: "Not a valid type image" });
+    }
+    if (!file) {
+      return res.status(400).send({ message: "Please upload a file." });
+    }
+    return res.send({ message: "File uploaded successfully.", file });
+  }
+);
+app.post(
+  "/upload-profile-image",
+  multer({ storage: storage, fileFilter: imageFilter }).single("file"),
+  (req, res, next) => {
+    const file = req.file;
+    if (res.err) {
+      return res.status(400).send({ message: "Not a valid type image" });
+    }
     if (!file) {
       return res.status(400).send({ message: "Please upload a file." });
     }

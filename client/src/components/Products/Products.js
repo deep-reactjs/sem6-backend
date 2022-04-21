@@ -8,7 +8,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
-import { TextField } from "@material-ui/core";
+import { Box, TextField } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -164,17 +164,32 @@ const Products = ({ setOpen, setCurrentId, products, categories }) => {
   return (
     <div className={styles.pageLayout}>
       <Container style={{ width: "85%" }}>
-        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
-          Add Product
-        </Button>
-        <TextField
-          id="outlined-basic"
-          label="Search Product"
-          variant="outlined"
-          size="small"
-          fullWidth
-          onChange={(e) => requestSearch(e.target.value)}
-        />
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "16px",
+            gap: "16px",
+          }}
+        >
+          <Button
+            style={{ textTransform: "none" }}
+            onClick={() => setOpen(true)}
+            variant="contained"
+            color="primary"
+          >
+            Add Product
+          </Button>
+          <TextField
+            id="outlined-basic"
+            label="Search Product"
+            variant="outlined"
+            size="small"
+            style={{ flexGrow: 1 }}
+            onChange={(e) => requestSearch(e.target.value)}
+          />
+        </Box>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>
@@ -207,8 +222,11 @@ const Products = ({ setOpen, setCurrentId, products, categories }) => {
                     {index + 1}
                   </TableCell>
                   <TableCell style={tableStyle}>
+                    {console.log(process.env.REACT_APP_API, row.imgUrl)}
                     <img
-                      src="https://picsum.photos/200/300"
+                      src={
+                        new URL(`${process.env.REACT_APP_API}/${row.imgUrl}`)
+                      }
                       height="100"
                       width="100"
                       alt={row.name}

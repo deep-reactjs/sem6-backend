@@ -1,11 +1,12 @@
 import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import SnackbarProvider from "react-simple-snackbar";
-import Home from "./components/Home/Home";
+// import Home from "./components/Home/Home";
 import Invoice from "./components/Invoice/Invoice";
 import Invoices from "./components/Invoices/Invoices";
 import InvoiceDetails from "./components/InvoiceDetails/InvoiceDetails";
 import ClientList from "./components/Clients/ClientList";
+import UserList from "./components/Users/UserList";
 import NavBar from "./components/NavBar/NavBar";
 import Login from "./components/Login/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -35,6 +36,7 @@ function App() {
             <Route path="/settings" exact component={Settings} />
             <Route path="/dashboard" exact component={Dashboard} />
             <Route path="/customers" exact component={ClientList} />
+            <Route path="/users" exact component={UserList} />
             <Route path="/products" exact component={ProductList} />
             <Route path="/categories" exact component={CategoryList} />
             <Route path="/forgot" exact component={Forgot} />

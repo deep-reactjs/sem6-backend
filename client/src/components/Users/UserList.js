@@ -1,26 +1,24 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
-import Products from "./Products";
-import AddProduct from "./AddProduct";
-import { getProductsByUser } from "../../actions/productActions";
-import { getCategoriesByUser } from "../../actions/categoryActions";
+import Clients from "./Clients";
+import AddClient from "./AddClient";
+import { getUsersByAdmin } from "../../actions/clientActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
 import NoData from "../svgIcons/NoData";
 import Spinner from "../Spinner/Spinner";
 
-const ProductList = () => {
+const UserList = () => {
   const history = useHistory();
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"));
-  const { products } = useSelector((state) => state.products);
-  const { categories } = useSelector((state) => state.categories);
-  const isLoading = useSelector((state) => state?.products?.isLoading);
+  console.log(user);
+  const { clients } = useSelector((state) => state.clients);
+  const isLoading = useSelector((state) => state.clients.isLoading);
   // const clients = []
-
   // useEffect(() => {
   // }, [currentId, dispatch]);
 
@@ -32,18 +30,9 @@ const ProductList = () => {
   // )
 
   useEffect(() => {
-    dispatch(
-      getProductsByUser({ search: user?.result?._id || user.result.googleId })
-    );
-  }, [dispatch]);
-  useEffect(() => {
-    if (categories && categories.length <= 0)
-      dispatch(
-        getCategoriesByUser({
-          search: user?.result?._id || user.result.googleId,
-        })
-      );
-  }, [categories]);
+    dispatch(getUsersByAdmin());
+  }, [location, dispatch]);
+
   if (!user) {
     history.push("/login");
   }
@@ -64,7 +53,7 @@ const ProductList = () => {
     );
   }
 
-  if (products?.length === 0) {
+  if (clients.length === 0) {
     return (
       <div
         style={{
@@ -78,7 +67,7 @@ const ProductList = () => {
       >
         <NoData />
         <p style={{ padding: "40px", color: "gray", textAlign: "center" }}>
-          No Products yet. Click the plus icon to add Product
+          No customers yet. Click the plus icon to add customer
         </p>
       </div>
     );
@@ -86,22 +75,21 @@ const ProductList = () => {
 
   return (
     <div>
-      <AddProduct
+      <AddClient
         open={open}
         setOpen={setOpen}
         currentId={currentId}
         setCurrentId={setCurrentId}
       />
-      <Products
+      <Clients
         open={open}
         setOpen={setOpen}
         currentId={currentId}
         setCurrentId={setCurrentId}
-        products={products}
-        categories={categories}
+        clients={clients}
       />
     </div>
   );
 };
 
-export default ProductList;
+export default UserList;

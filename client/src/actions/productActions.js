@@ -1,6 +1,7 @@
 import * as api from "../api/index";
 
 import {
+  UPLOAD_PRODUCT,
   ADD_NEW_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT,
@@ -19,7 +20,20 @@ export const getProduct = (id) => async (dispatch) => {
     console.log(error);
   }
 };
-
+export const uploadProduct =
+  ({ file, onSuccess, openSnackbar }) =>
+  async (dispatch) => {
+    try {
+      // dispatch({ type: START_LOADING });
+      const formData = new FormData();
+      formData.append("file", file);
+      const { data } = await api.uploadProduct(formData);
+      onSuccess && onSuccess(data);
+      dispatch({ type: UPLOAD_PRODUCT, payload: data });
+    } catch (error) {
+      openSnackbar("Something went wrong");
+    }
+  };
 export const getProductsByUser = (searchQuery) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
@@ -48,7 +62,7 @@ export const updateProduct =
   (id, product, openSnackbar) => async (dispatch) => {
     const { data } = await api.updateProduct(id, product);
     dispatch({ type: UPDATE_PRODUCT, payload: data });
-    openSnackbar("Customer updated successfully");
+    openSnackbar("Product updated successfully");
     try {
     } catch (error) {
       console.log(error);
@@ -60,7 +74,7 @@ export const deleteProduct = (id, openSnackbar) => async (dispatch) => {
     await api.deleteProduct(id);
 
     dispatch({ type: DELETE_PRODUCT, payload: id });
-    openSnackbar("Customer deleted successfully");
+    openSnackbar("Product deleted successfully");
   } catch (error) {
     console.log(error);
   }

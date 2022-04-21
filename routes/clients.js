@@ -1,12 +1,18 @@
-import express from 'express'
-import {getClients, createClient, updateClient, deleteClient, getClientsByUser} from '../controllers/clients.js'
+import express from "express";
+import {
+  getClients,
+  createClient,
+  updateClient,
+  deleteClient,
+  getClientsByUser,
+} from "../controllers/clients.js";
+import auth from "../middleware/auth.js";
+const router = express.Router();
 
-const router = express.Router()
+router.get("/", auth, getClients);
+router.get("/user", auth, getClientsByUser);
+router.post("/", createClient);
+router.patch("/:id", updateClient);
+router.delete("/:id", deleteClient);
 
-router.get('/', getClients)
-router.get('/user', getClientsByUser);
-router.post('/', createClient)
-router.patch('/:id', updateClient)
-router.delete('/:id', deleteClient)
-
-export default router
+export default router;

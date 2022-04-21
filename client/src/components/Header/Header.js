@@ -99,6 +99,7 @@ const Header = () => {
     <div className={styles.header}>
       <div className={classes.root}>
         <div>
+          {user?.result?.role === 1 && "Admin"}
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}

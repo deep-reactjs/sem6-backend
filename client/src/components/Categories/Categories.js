@@ -21,7 +21,7 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import Container from "@material-ui/core/Container";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import BorderColorIcon from "@material-ui/icons/BorderColor";
-import { Button } from "@material-ui/core";
+import { Button, Box } from "@material-ui/core";
 import { useSnackbar } from "react-simple-snackbar";
 
 import { deleteCategory } from "../../actions/categoryActions";
@@ -157,16 +157,37 @@ const Categories = ({
 
   return (
     <div className={styles.pageLayout}>
-      <Container style={{ width: "85%" }}>
-        <Button style={{ textTransform: "none" }} onClick={() => setOpen(true)}>
-          Add Category
-        </Button>
-        <Button
-          style={{ textTransform: "none" }}
-          onClick={() => setOpenSubCategory(true)}
+      <Container
+        style={{
+          width: "85%",
+        }}
+      >
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            marginBottom: "16px",
+            gap: "16px",
+          }}
         >
-          Add Sub Category
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ textTransform: "none" }}
+            onClick={() => setOpen(true)}
+          >
+            Add Category
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ textTransform: "none" }}
+            onClick={() => setOpenSubCategory(true)}
+          >
+            Add Sub Category
+          </Button>
+        </Box>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>

@@ -37,6 +37,7 @@ export const updateSubCategory = (id, updatedSubcategory) =>
   API.patch(`/subcategory/${id}`, updatedSubcategory);
 export const deleteSubCategory = (id) => API.delete(`/subcategory/${id}`);
 
+export const getUsers = () => API.get("/users/users");
 export const fetchClient = (id) => API.get(`/clients/${id}`);
 export const fetchClients = (page) => API.get(`/clients?page=${page}`);
 export const addClient = (client) => API.post("/clients", client);
@@ -45,7 +46,12 @@ export const updateClient = (id, updatedClient) =>
 export const deleteClient = (id) => API.delete(`/clients/${id}`);
 export const fetchClientsByUser = (searchQuery) =>
   API.get(`/clients/user?searchQuery=${searchQuery.search}`);
-
+export const uploadProduct = (file) =>
+  API.post("/upload-product-image", file, {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  });
 export const fetchProduct = (id) => API.get(`/products/${id}`);
 export const fetchProducts = (page) => API.get(`/products?page=${page}`);
 export const addProduct = (product) => API.post("/products", product);

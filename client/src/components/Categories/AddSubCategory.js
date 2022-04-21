@@ -78,6 +78,7 @@ const AddSubCategory = ({
     name: "",
   });
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [errorText, setErrorText] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState();
   const dispatch = useDispatch();
   const category = useSelector((state) =>
@@ -115,22 +116,32 @@ const AddSubCategory = ({
   console.log(selectedSubCategory);
   const handleSubmitSubCategory = (e) => {
     e.preventDefault();
-    if (currentId) {
-      dispatch(updateSubCategory(currentId, subCategoryData, openSnackbar));
-    } else {
+    if (selectedSubCategory && subCategoryData.name) {
+      if (currentId) {
+        dispatch(updateSubCategory(currentId, subCategoryData, openSnackbar));
+      } else {
+        dispatch(
+          createSubCategory(
+            { ...subCategoryData, categoryId: selectedSubCategory },
+            openSnackbar
+          )
+        );
+      }
       dispatch(
-        createSubCategory(
-          { ...subCategoryData, categoryId: selectedSubCategory },
-          openSnackbar
-        )
+        getCategoriesByUser({
+          search: user?.result?._id || user.result.googleId,
+        })
       );
-    }
-    dispatch(
-      getCategoriesByUser({ search: user?.result?._id || user.result.googleId })
-    );
 
-    clear();
-    handleClose();
+      clear();
+      handleClose();
+    }
+    if (!selectedSubCategory) {
+      setErrorText("Please select category");
+    }
+    if (!subCategoryData.name) {
+      setErrorText("Please enter subcategory name");
+    }
   };
 
   const clear = () => {
@@ -185,12 +196,17 @@ const AddSubCategory = ({
                 style={inputStyle}
                 name="name"
                 type="text"
-                onChange={(e) =>
-                  setSubCategoryData({
-                    ...subCategoryData,
-                    name: e.target.value,
-                  })
-                }
+                onChange={(e) => {
+                  if (e.target.value.length > 50) {
+                    setErrorText("Max 50 characters allowed");
+                  } else {
+                    setErrorText(null);
+                    setSubCategoryData({
+                      ...subCategoryData,
+                      name: e.target.value,
+                    });
+                  }
+                }}
                 value={subCategoryData.name}
               />
               <Select
@@ -209,6 +225,7 @@ const AddSubCategory = ({
                   ))}
               </Select>
             </div>
+            {errorText && <Typography color="error">{errorText}</Typography>}
           </DialogContent>
           <DialogActions>
             <Button

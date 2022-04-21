@@ -429,6 +429,7 @@ const Invoice = () => {
                               <TextField
                                 {...params}
                                 // required={!invoice && true}
+                                required
                                 label="Select Product"
                                 margin="normal"
                                 variant="outlined"
@@ -459,6 +460,7 @@ const Invoice = () => {
                       <InputBase
                         sx={{ ml: 1, flex: 1 }}
                         type="number"
+                        required
                         name="quantity"
                         onChange={(e) => handleChange(index, e)}
                         value={itemField.quantity}

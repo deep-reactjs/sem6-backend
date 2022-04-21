@@ -7,6 +7,7 @@ import {
   FETCH_CLIENT,
   START_LOADING,
   END_LOADING,
+  FETCH_USERS,
 } from "../actions/constants";
 
 const clients = (state = { isLoading: true, clients: [] }, action) => {
@@ -15,6 +16,9 @@ const clients = (state = { isLoading: true, clients: [] }, action) => {
       return { ...state, isLoading: true };
     case END_LOADING:
       return { ...state, isLoading: false };
+    case FETCH_USERS:
+      console.log(action.payload.users);
+      return { ...state, isLoading: false, clients: action.payload.users };
     case ALL_CLIENTS:
       return {
         ...state,

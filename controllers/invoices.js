@@ -5,11 +5,13 @@ import InvoiceModel from "../models/InvoiceModel.js";
 
 export const getInvoicesByUser = async (req, res) => {
   const { searchQuery } = req.query;
-
+  console.log(req.role);
   try {
-    const invoices = await InvoiceModel.find({ creator: searchQuery });
+    const invoices =
+      req.role == "admin"
+        ? await InvoiceModel.find()
+        : await InvoiceModel.find({ creator: searchQuery });
     // const invoices = await InvoiceModel.find().where('creator').in(searchQuery);
-
     res.status(200).json({ data: invoices });
   } catch (error) {
     res.status(404).json({ message: error.message });

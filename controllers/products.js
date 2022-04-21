@@ -103,7 +103,10 @@ export const getProductsByUser = async (req, res) => {
   const { searchQuery } = req.query;
 
   try {
-    const products = await ProductModel.find({ userId: req.userId });
+    const products =
+      req.role == "admin"
+        ? await ProductModel.find()
+        : await ProductModel.find({ userId: req.userId });
 
     res.json({ data: products });
   } catch (error) {

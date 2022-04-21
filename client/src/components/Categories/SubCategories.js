@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import styles from "./Clients.module.css";
+import styles from "./Categories.module.css";
 // import moment from 'moment'
 import PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -21,10 +21,10 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import Container from "@material-ui/core/Container";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import BorderColorIcon from "@material-ui/icons/BorderColor";
-import { Button, Box, TextField } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { useSnackbar } from "react-simple-snackbar";
 
-import { deleteClient } from "../../actions/clientActions";
+import { deleteCategory } from "../../actions/categoryActions";
 // import clients from '../../clients.json'
 
 const useStyles1 = makeStyles((theme) => ({
@@ -114,31 +114,24 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-const Clients = ({ setOpen, setCurrentId, clients }) => {
+const SubCategories = ({ categories }) => {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(clients.length);
+  const [rowsPerPage, setRowsPerPage] = useState(categories?.length);
   // eslint-disable-next-line
   const [openSnackbar, closeSnackbar] = useSnackbar();
 
   const dispatch = useDispatch();
-  const rows = clients;
-
+  const rows = categories;
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows?.length - page * rowsPerPage);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
+  console.log(rows);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleEdit = (selectedInvoice) => {
-    setOpen((prevState) => !prevState);
-    setCurrentId(selectedInvoice);
   };
 
   const tableStyle = {
@@ -154,32 +147,6 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
   return (
     <div className={styles.pageLayout}>
       <Container style={{ width: "85%" }}>
-        <Box
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "16px",
-            gap: "16px",
-          }}
-        >
-          <Button
-            style={{ textTransform: "none" }}
-            onClick={() => setOpen(true)}
-            variant="contained"
-            color="primary"
-          >
-            Add Customer
-          </Button>
-          <TextField
-            id="outlined-basic"
-            label="Search Customer"
-            variant="outlined"
-            size="small"
-            style={{ flexGrow: 1 }}
-            // onChange={(e) => requestSearch(e.target.value)}
-          />
-        </Box>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
             <TableHead>
@@ -188,8 +155,7 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
                   Number
                 </TableCell>
                 <TableCell style={headerStyle}>Name</TableCell>
-                <TableCell style={headerStyle}>Email</TableCell>
-                <TableCell style={headerStyle}>Phone</TableCell>
+                <TableCell style={headerStyle}>Category</TableCell>
                 <TableCell style={headerStyle}>Edit</TableCell>
                 <TableCell style={headerStyle}>Delete</TableCell>
               </TableRow>
@@ -202,7 +168,7 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
                     page * rowsPerPage + rowsPerPage
                   )
                 : rows
-              ).map((row, index) => (
+              )?.map((row, index) => (
                 <TableRow key={row._id} styel={{ cursor: "pointer" }}>
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
                     {index + 1}
@@ -211,13 +177,23 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
                     {" "}
                     <Button style={{ textTransform: "none" }}>
                       {" "}
-                      {row.name}{" "}
+                      {row.category.name}{" "}
                     </Button>
                   </TableCell>
-                  <TableCell style={tableStyle}>{row.email}</TableCell>
-                  <TableCell style={tableStyle}>{row.phone}</TableCell>
+                  <TableCell style={tableStyle} scope="row">
+                    {" "}
+                    <Button style={{ textTransform: "none" }}>
+                      {" "}
+                      {row.subCategories
+                        .map((subCategory) => {
+                          return subCategory.name;
+                        })
+                        .toString()}
+                    </Button>
+                  </TableCell>
+
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
-                    <IconButton onClick={() => handleEdit(row._id)}>
+                    <IconButton>
                       <BorderColorIcon
                         style={{ width: "20px", height: "20px" }}
                       />
@@ -226,7 +202,7 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
                   <TableCell style={{ ...tableStyle, width: "10px" }}>
                     <IconButton
                       onClick={() =>
-                        dispatch(deleteClient(row._id, openSnackbar))
+                        dispatch(deleteCategory(row.category._id, openSnackbar))
                       }
                     >
                       <DeleteOutlineRoundedIcon
@@ -239,7 +215,7 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
 
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={9} />
                 </TableRow>
               )}
             </TableBody>
@@ -247,8 +223,8 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={6}
-                  count={rows.length}
+                  colSpan={9}
+                  count={rows?.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
@@ -268,4 +244,4 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
   );
 };
 
-export default Clients;
+export default SubCategories;
