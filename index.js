@@ -46,8 +46,6 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/");
   },
-
-  // By default, multer removes file extensions so let's add them back
   filename: function (req, file, cb) {
     cb(
       null,
@@ -55,7 +53,6 @@ const storage = multer.diskStorage({
     );
   },
 });
-// NODEMAILER TRANSPORT FOR SENDING INVOICE VIA EMAIL
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
@@ -66,20 +63,7 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false,
   },
-  // host: "smtp.ethereal.email",
-  // port: 587,
-  // auth: {
-  //   user: "kassandra.nader55@ethereal.email",
-  //   pass: "B9xn8HJP67VeSZUFWb",
-  // },
 });
-// transporter.verify(function (error, success) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log("Server is ready to take our messages");
-//   }
-// });
 app.post(
   "/upload-product-image",
   multer({ storage: storage, fileFilter: imageFilter }).single("file"),
@@ -110,27 +94,24 @@ app.post(
 );
 
 var options = { format: "A4" };
-//SEND PDF INVOICE VIA EMAIL
 app.post("/send-pdf", (req, res) => {
   const { email, company } = req.body;
 
-  // pdf.create(pdfTemplate(req.body), {}).toFile('invoice.pdf', (err) => {
   pdf.create(pdfTemplate(req.body), options).toFile("invoice.pdf", (err) => {
-    // send mail with defined transport object
     transporter
       .sendMail({
         from: `${
           company.businessName ? company.businessName : company.name
-        } <deepsoni704625@gmail.com>`, // sender address
-        to: `${email}`, // list of receivers
+        } <deepsoni704625@gmail.com>`,
+        to: `${email}`,
         replyTo: `${company.email}`,
         subject: `Invoice from ${
           company.businessName ? company.businessName : company.name
-        }`, // Subject line
+        }`,
         text: `Invoice from ${
           company.businessName ? company.businessName : company.name
-        }`, // plain text body
-        html: emailTemplate(req.body), // html body
+        }`,
+        html: emailTemplate(req.body),
         attachments: [
           {
             filename: "invoice.pdf",
@@ -149,12 +130,6 @@ app.post("/send-pdf", (req, res) => {
   });
 });
 
-//Problems downloading and sending invoice
-// npm install html-pdf -g
-// npm link html-pdf
-// npm link phantomjs-prebuilt
-
-//CREATE AND SEND PDF INVOICE
 app.post("/create-pdf", (req, res) => {
   pdf.create(pdfTemplate(req.body), {}).toFile("invoice.pdf", (err) => {
     if (err) {
@@ -164,7 +139,6 @@ app.post("/create-pdf", (req, res) => {
   });
 });
 
-//SEND PDF INVOICE
 app.get("/fetch-pdf", (req, res) => {
   res.sendFile(`${__dirname}/invoice.pdf`);
 });
@@ -173,9 +147,7 @@ app.get("/", (req, res) => {
   res.send("SERVER IS RUNNING");
 });
 
-const DB_URL =
-  process.env.DB_URL ||
-  "mongodb+srv://deep:deep@cluster0.3tmb3.mongodb.net/sem6?retryWrites=true&w=majority";
+const DB_URL = process.env.DB_URL;
 const PORT = process.env.PORT || 5000;
 
 mongoose

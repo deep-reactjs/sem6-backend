@@ -37,15 +37,16 @@ export const getCategories = async (req, res) => {
     const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
 
     const total = await CategoryModel.countDocuments({});
-    var categories = (req.role = "admin"
-      ? await CategoryModel.find()
-          .sort({ _id: -1 })
-          .limit(LIMIT)
-          .skip(startIndex)
-      : await CategoryModel.find({ userId: userId })
-          .sort({ _id: -1 })
-          .limit(LIMIT)
-          .skip(startIndex));
+    var categories =
+      req.role == "admin"
+        ? await CategoryModel.find()
+            .sort({ _id: -1 })
+            .limit(LIMIT)
+            .skip(startIndex)
+        : await CategoryModel.find({ userId: userId })
+            .sort({ _id: -1 })
+            .limit(LIMIT)
+            .skip(startIndex);
     var data = [];
     for (let i = 0; i < categories.length; i++) {
       data[i] = {

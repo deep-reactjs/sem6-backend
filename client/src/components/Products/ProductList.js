@@ -43,7 +43,7 @@ const ProductList = () => {
           search: user?.result?._id || user.result.googleId,
         })
       );
-  }, [categories]);
+  }, []);
   if (!user) {
     history.push("/login");
   }

@@ -67,7 +67,7 @@ const UserList = () => {
       >
         <NoData />
         <p style={{ padding: "40px", color: "gray", textAlign: "center" }}>
-          No customers yet. Click the plus icon to add customer
+          No Users yet.
         </p>
       </div>
     );

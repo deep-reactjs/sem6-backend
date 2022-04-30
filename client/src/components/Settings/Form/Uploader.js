@@ -29,14 +29,14 @@ export default function Uploader({ form, setForm }) {
   }, [file]);
 
   const onDrop = useCallback((acceptedFiles) => {
-    const url = "http://localhost:5000/image/upload";
+    const url = "http://localhost:5000/upload-profile-image";
 
     acceptedFiles.forEach(async (acceptedFile) => {
       //   const { signature, timestamp } = await getSignature();
 
       const formData = new FormData();
       formData.append("file", acceptedFile);
-      formData.append("upload_preset", "invoice");
+      // formData.append("upload_preset", "invoice");
 
       const response = await fetch(url, {
         method: "post",
@@ -44,8 +44,8 @@ export default function Uploader({ form, setForm }) {
       });
       setProgress(100);
       const data = await response.json();
-
-      setFile(data.secure_url);
+      console.log(data.file.path);
+      setFile(new URL(`${process.env.REACT_APP_API}/${data.file.path}`));
       console.log(data);
     });
   }, []);

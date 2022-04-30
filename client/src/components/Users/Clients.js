@@ -169,16 +169,16 @@ const Clients = ({ setOpen, setCurrentId, clients }) => {
             variant="contained"
             color="primary"
           >
-            Add Customer
+            Add User
           </Button>
-          <TextField
+          {/* <TextField
             id="outlined-basic"
-            label="Search Customer"
+            label="Search User"
             variant="outlined"
             size="small"
             style={{ flexGrow: 1 }}
             // onChange={(e) => requestSearch(e.target.value)}
-          />
+          /> */}
         </Box>
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">
